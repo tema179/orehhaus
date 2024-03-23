@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+  // previewFeatures = ["mongoDb"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  password  String
+  name      String
+  email     String   @unique
+  avatar    String?
+  tokens    Token[]
+}
+
+model Token {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  token    String
+  userId   String @db.ObjectId
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+model Newsletter {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+}
+
+model News {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  photo     String?
+  text      String
+  createdAt DateTime @default(now())
+}
+
+model Service {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  price     Float
+  description String
+  photo     String?
+}
+
+model Event {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  photo       String?
+}
+
+model TypeServices {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  photo       String?
+  payments Payments[]
+}
+
+model Payments {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String?
+  description String?
+  message String?
+  name String
+  bill String
+  sum Float
+  phone String
+  date DateTime? @default(now())
+  typeServicesId   String @db.ObjectId
+  typeServices     TypeServices   @relation(fields: [typeServicesId], references: [id])
+}
+
+model Reviews {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  message String?
+  name String
+  phone String
+  date DateTime? @default(now())
+}
